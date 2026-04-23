@@ -7,8 +7,8 @@ from torch.utils.data import Dataset
 
 class SequenceDataset(Dataset):
     """
-    TSIRMT版本
-    读取灰度序列图，返回 (1,T,1,H,W)，标签为最后一张掩膜(1,1,H,W)
+    TSIRMT version
+    Reads a grayscale image sequence, returns (1, T, 1, H, W), with the label being the last mask (1, 1, H, W)
     """
 
     def __init__(self,
@@ -31,7 +31,7 @@ class SequenceDataset(Dataset):
         img_root = os.path.join(self.data_root, self.img_dir_name)
         mask_root = os.path.join(self.data_root, self.mask_dir_name)
 
-        # ✅ 扫描所有序列文件夹
+        # Scan all sequential folders
         sequences = sorted(os.listdir(img_root))
 
         for seq in sequences:

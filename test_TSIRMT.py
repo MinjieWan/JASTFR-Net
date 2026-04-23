@@ -25,6 +25,7 @@ def test_all_sequences(test_root='./dataset/TSIRMT/val',
 
     img_root = os.path.join(test_root, 'images')
 
+    # Collect all sequence directories
     seq_dirs = [os.path.join(img_root, d)
                 for d in sorted(os.listdir(img_root))
                 if os.path.isdir(os.path.join(img_root, d))]
@@ -35,25 +36,25 @@ def test_all_sequences(test_root='./dataset/TSIRMT/val',
     all_preds = []
     all_gts = []
 
-    total_inference_time = 0.0  # 总推理时间（秒）
-    total_frames = 0  # 总帧数
+    total_inference_time = 0.0  # Total inference time (seconds)
+    total_frames = 0  # Total frames
 
     for seq_dir in seq_dirs:
         seq_name = os.path.basename(seq_dir)
         print(f'\n==== Processing {seq_name} ====')
 
-        # 数据集
+        # dataset
         dataset = TestSequenceDataset(seq_dir, seq_len=5, resize_to_256=resize_to_256)
 
-        # 输出目录
+        # Output Directory
         out_img_dir = os.path.join(output_root, seq_name)
         os.makedirs(out_img_dir, exist_ok=True)
 
         preds_seq = []
         gts_seq = []
 
-        seq_inference_time = 0.0  # 单序列总耗时
-        seq_frames = 0  # 单序列帧数
+        seq_inference_time = 0.0  # Total time for single sequence
+        seq_frames = 0  # Number of frames per single sequence
 
         with torch.no_grad():
             for seq, mask_gt, mask_path in tqdm(dataset, desc=seq_name):
@@ -61,7 +62,7 @@ def test_all_sequences(test_root='./dataset/TSIRMT/val',
                 seq = seq.permute(0, 2, 1, 3, 4)
                 seq = seq.to(device)
 
-                # ================== 计时开始 ==================
+                # ================== Timing starts ==================
                 if torch.cuda.is_available():
                     torch.cuda.synchronize()
                 start = time.time()
@@ -71,44 +72,44 @@ def test_all_sequences(test_root='./dataset/TSIRMT/val',
                 if torch.cuda.is_available():
                     torch.cuda.synchronize()
                 end = time.time()
-                # ================== 计时结束 ==================
+                # ================== Timing ends ==================
 
                 t = end - start
                 print(f"t: {t:.4f}")
 
-                # 累加时间统计
+                # Cumulative time statistics
                 seq_inference_time += t
                 seq_frames += 1
 
-                # 1. 计算 sigmoid 概率值 (0~1)
+                # 1. Calculate the sigmoid probability value (0~1)
                 pred_prob = torch.sigmoid(pred)
 
-                # 2. 二值化结果（用于后续指标计算，存入 preds_seq）
+                # 2. Binarization results (used for subsequent metric calculation, stored in preds_seq)
                 pred_binary = pred_prob > 0.5
                 pred_binary_np = pred_binary.cpu().numpy().astype(np.uint8)[0, 0]
 
-                # 3. 灰度图结果（用于保存图像）
+                # 3. Grayscale image result (for saving images)
                 pred_gray_np = pred_prob.cpu().numpy()[0, 0]
                 pred_gray_np = (pred_gray_np * 255).astype(np.uint8)
 
                 mask_np = mask_gt.cpu().numpy().astype(np.uint8)[0, 0]
 
-                # 存入序列的是二值化结果
+                # The binarization results are stored in the sequence
                 preds_seq.append(pred_binary_np)
                 gts_seq.append(mask_np)
 
-                # 保存的是灰度图
+                # What is saved is a grayscale image
                 frame_id = os.path.basename(mask_path)
                 cv2.imwrite(os.path.join(out_img_dir, frame_id), pred_gray_np)
 
-        # 累加到全局统计
+        # Accumulate to global statistics
         total_inference_time += seq_inference_time
         total_frames += seq_frames
 
-        # 计算单序列平均耗时
+        # Calculate the average time consumption of a single sequence
         avg_time_per_frame = seq_inference_time / seq_frames if seq_frames > 0 else 0
 
-        # 计算单序列指标
+        # Calculate single sequence metrics
         pred_flat = np.concatenate([p.ravel() for p in preds_seq]).astype(bool)
         gt_flat = np.concatenate([g.ravel() for g in gts_seq]).astype(bool)
 
@@ -123,7 +124,7 @@ def test_all_sequences(test_root='./dataset/TSIRMT/val',
         all_preds.append(pred_flat)
         all_gts.append(gt_flat)
 
-    # 全局指标
+    # Global indicators
     all_preds = np.concatenate(all_preds)
     all_gts = np.concatenate(all_gts)
     global_iou = np.sum(all_preds & all_gts) / np.sum(all_preds | all_gts)

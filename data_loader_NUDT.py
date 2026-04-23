@@ -7,8 +7,8 @@ from torch.utils.data import Dataset
 
 class SequenceDataset(Dataset):
     """
-    读取灰度序列图，返回 (T,1,H,W)，标签为最后一张掩膜(1,H,W)。
-    若 resize_to_256=True，则统一缩放到 256×256。
+    Read a grayscale sequence image, returning (T,1,H,W), with the label being the last mask (1,H,W).
+    If resize_to_256=True, scale uniformly to 256×256.
     """
 
     def __init__(self,
@@ -28,7 +28,7 @@ class SequenceDataset(Dataset):
 
         self.samples = []   # (sequence_folder, start_idx)
 
-        # 扫描所有序列文件夹
+        # Scan all sequential folders
         for item in os.listdir(data_root):
             seq_path = os.path.join(data_root, item)
             if not (os.path.isdir(seq_path) and item.startswith(self.seq_prefix)):
@@ -111,7 +111,7 @@ class TestSequenceDataset(Dataset):
             raise RuntimeError('sequence too short')
 
     def __len__(self):
-        return len(self.img_paths) - self.seq_len + 1   # 有效样本数
+        return len(self.img_paths) - self.seq_len + 1
 
     def __getitem__(self, idx):
         imgs = []
@@ -123,7 +123,6 @@ class TestSequenceDataset(Dataset):
             imgs.append(img[np.newaxis, ...])     # (1,H,W)
         img_seq = np.concatenate(imgs, axis=0)    # (10,1,H,W) -> (10,H,W)
 
-        # 对应的 GT 掩膜（第 idx+9 张）
         mask = cv2.imread(self.mask_paths[idx + self.seq_len - 1], cv2.IMREAD_GRAYSCALE)
         if self.resize:
             mask = cv2.resize(mask, (256, 256), interpolation=cv2.INTER_NEAREST)
@@ -131,4 +130,4 @@ class TestSequenceDataset(Dataset):
 
         return torch.from_numpy(img_seq).unsqueeze(0), \
                torch.from_numpy(mask).unsqueeze(0), \
-               self.mask_paths[idx + self.seq_len - 1]  # 用于保存文件名
+               self.mask_paths[idx + self.seq_len - 1]  # Used to save the file name

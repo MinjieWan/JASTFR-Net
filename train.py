@@ -19,7 +19,7 @@ def main():
     net = JASTFRNet()
     net.to(device)
 
-    # 参数配置
+    # Parameter Configuration
     # ---------------------------------
     batch_size = 4
 
@@ -101,7 +101,7 @@ def main():
             precision = precision_score(gt, pred)
             recall = recall_score(gt, pred)
 
-            # 打印训练和验证结果
+            # Print training and validation results
             print(f'Epoch [{epoch + 1}/{num_epochs}], '
                   f'Train Loss: {train_loss:.4f}, '
                   f'Val Loss: {val_loss:.4f}, '
