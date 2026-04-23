@@ -38,7 +38,36 @@ We use the following datasets:
 ```bash
 JASTFRNet/
 ├── dataset/        # sample data (not full dataset)
-├── checkpoints/    # trained model
+├── checkpoints/    # pre-trained models
 ├── JASTFRNet.py    # network definition
 ├── train.py        # training script
 └── test_xxx.py     # testing script
+
+## 🚀 Training & Testing
+
+### Training
+python train.py
+
+You can modify training configurations in train.py, including:
+
+dataset path
+batch size
+learning rate
+number of epochs
+
+### Testing
+python test_xxx.py
+
+## ⚠️ Notes:
+
+Please modify the model path in test_xxx.py before testing
+Different datasets correspond to different test scripts
+Select the appropriate test_xxx.py according to the dataset you use
+📦 Pre-trained Models
+
+We provide trained models in the checkpoints/ directory:
+
+NUDT-MIRSDT → NUDT.pth
+TSIRMT → TSIRMT.pth
+
+Please load the corresponding model when testing on different datasets.
