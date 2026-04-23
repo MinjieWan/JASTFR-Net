@@ -1,6 +1,6 @@
-# JASTFRNet
+# JASTFR-Net
 
-Official PyTorch implementation of JASTFRNet.
+Official PyTorch implementation of JASTFR-Net.
 
 ---
 
@@ -36,7 +36,7 @@ We use the following datasets:
 ## 📁 Project Structure
 
 ```bash
-JASTFRNet/
+JASTFR-Net/
 ├── dataset/        # sample data (not full dataset)
 ├── checkpoints/    # pre-trained models
 ├── JASTFRNet.py    # network definition
