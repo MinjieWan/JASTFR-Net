@@ -42,6 +42,7 @@ JASTFRNet/
 ├── JASTFRNet.py    # network definition
 ├── train.py        # training script
 └── test_xxx.py     # testing script
+```
 
 ## 🚀 Training & Testing
 
@@ -50,25 +51,25 @@ python train.py
 
 You can modify training configurations in train.py, including:
 
-dataset path
-batch size
-learning rate
-number of epochs
+- dataset path
+- batch size
+- learning rate
+- number of epochs
 
 ### Testing
 python test_xxx.py
 
 ## ⚠️ Notes:
 
-Please modify the model path in test_xxx.py before testing
-Different datasets correspond to different test scripts
-Select the appropriate test_xxx.py according to the dataset you use
+- Please modify the model path in test_xxx.py before testing
+- Different datasets correspond to different test scripts
+- Select the appropriate test_xxx.py according to the dataset you use
 
 ## 📦 Pre-trained Models
 
 We provide trained models in the checkpoints/ directory:
 
-NUDT-MIRSDT → NUDT.pth
-TSIRMT → TSIRMT.pth
+- NUDT-MIRSDT → NUDT.pth
+- TSIRMT → TSIRMT.pth
 
 Please load the corresponding model when testing on different datasets.
