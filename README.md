@@ -61,9 +61,9 @@ python test_xxx.py
 
 ## ⚠️ Notes:
 
-- Please modify the model path in test_xxx.py before testing
-- Different datasets correspond to different test scripts
-- Select the appropriate test_xxx.py according to the dataset you use
+- Please modify the model path in test_xxx.py before testing.
+- Different datasets correspond to different test scripts.
+- Select the appropriate test_xxx.py according to the dataset you use.
 
 ## 📦 Pre-trained Models
 
