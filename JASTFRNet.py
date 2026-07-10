@@ -260,5 +260,5 @@ class HybridLoss(nn.Module):
 
         ssim_loss = 1 - ssim(pred_prob, target, data_range=1.0, size_average=True)
 
-        return 0.5 * bce + 0.3 * dice + 0.15 * focal_tversky + 0.05 * ssim_loss
+        return 0.4 * bce + 0.4 * dice + 0.15 * focal_tversky + 0.05 * ssim_loss
 
